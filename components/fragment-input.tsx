@@ -3,8 +3,12 @@
 import { useState } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { FileText, Globe } from "lucide-react"
 // API调用现在通过Next.js API路由处理，不再需要直接导入
 import { useFragmentStore } from "@/lib/stores/fragment-store"
+import { WebFragmentInput } from "./web-fragment-input"
 
 export function FragmentInput() {
   const [text, setText] = useState("")
@@ -127,20 +131,48 @@ export function FragmentInput() {
   }
 
   return (
-    <div className="flex gap-2 ">
-      <Textarea 
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder="输入新的知识碎片..."
-        className="flex-1 min-h-[160px] resize-none"
-      />
-      <Button 
-        onClick={handleAddFragment}
-        disabled={isLoading}
-        className="h-40 px-6"
-      >
-        {isLoading ? "添加中..." : "添加"}
-      </Button>
+    <div className="space-y-6">
+      <Tabs defaultValue="text" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="text" className="flex items-center gap-2">
+            <FileText className="w-4 h-4" />
+            文本输入
+          </TabsTrigger>
+          <TabsTrigger value="web" className="flex items-center gap-2">
+            <Globe className="w-4 h-4" />
+            网页解析
+          </TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="text" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>手动输入知识碎片</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex gap-2">
+                <Textarea 
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  placeholder="输入新的知识碎片..."
+                  className="flex-1 min-h-[160px] resize-none"
+                />
+                <Button 
+                  onClick={handleAddFragment}
+                  disabled={isLoading}
+                  className="h-40 px-6"
+                >
+                  {isLoading ? "添加中..." : "添加"}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="web" className="mt-6">
+          <WebFragmentInput />
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }
