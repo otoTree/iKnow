@@ -1,143 +1,154 @@
-"use client"
+"use client";
 
 /**
  * 网页链接知识碎片输入组件
  * 支持通过Jina AI解析网页内容并生成知识碎片
  */
 
-import React, { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Progress } from '@/components/ui/progress'
-import { 
-  Globe, 
-  Sparkles, 
-  FileText, 
-  Tag, 
-  Clock, 
+import React, { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Progress } from "@/components/ui/progress";
+import {
+  Globe,
+  Sparkles,
+  FileText,
+  Tag,
+  Clock,
   AlertCircle,
   CheckCircle2,
   Copy,
   ExternalLink,
-  Loader2
-} from 'lucide-react'
-import { useFragmentStore } from '@/lib/stores/fragment-store'
-import { ExtractedWebContent } from '@/lib/jina-service'
+  Loader2,
+} from "lucide-react";
+import { useFragmentStore } from "@/lib/stores/fragment-store";
+import { ExtractedWebContent } from "@/lib/jina-service";
 
+type ExtractModeType = "full" | "summary" | "custom";
 export function WebFragmentInput() {
-  const [url, setUrl] = useState('')
-  const [userPrompt, setUserPrompt] = useState('')
-  const [extractMode, setExtractMode] = useState<'full' | 'summary' | 'custom'>('summary')
-  const [isLoading, setIsLoading] = useState(false)
-  const [extractedContent, setExtractedContent] = useState<ExtractedWebContent | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [progress, setProgress] = useState(0)
-  
-  const { addFragment } = useFragmentStore()
+  const [url, setUrl] = useState("");
+  const [userPrompt, setUserPrompt] = useState("");
+  const [extractMode, setExtractMode] = useState<ExtractModeType>(
+    "summary"
+  );
+  const [isLoading, setIsLoading] = useState(false);
+  const [extractedContent, setExtractedContent] =
+    useState<ExtractedWebContent | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [progress, setProgress] = useState(0);
+
+  const { addFragment } = useFragmentStore();
 
   // 预设的提取模板
   const promptTemplates = [
     {
-      name: '技术要点提取',
-      prompt: '请提取文章中的关键技术要点、核心概念和实践建议，重点关注可操作的内容。'
+      name: "技术要点提取",
+      prompt:
+        "请提取文章中的关键技术要点、核心概念和实践建议，重点关注可操作的内容。",
     },
     {
-      name: '新闻摘要',
-      prompt: '请提取新闻的核心事实、关键人物、时间地点和影响分析。'
+      name: "新闻摘要",
+      prompt: "请提取新闻的核心事实、关键人物、时间地点和影响分析。",
     },
     {
-      name: '学习笔记',
-      prompt: '请整理成学习笔记的格式，包括主要概念、重要观点和实例说明。'
+      name: "学习笔记",
+      prompt: "请整理成学习笔记的格式，包括主要概念、重要观点和实例说明。",
     },
     {
-      name: '商业洞察',
-      prompt: '请提取商业相关的洞察、市场趋势、商业模式和战略要点。'
+      name: "商业洞察",
+      prompt: "请提取商业相关的洞察、市场趋势、商业模式和战略要点。",
     },
     {
-      name: '工具介绍',
-      prompt: '请重点提取工具的功能特性、使用方法、优缺点和适用场景。'
-    }
-  ]
+      name: "工具介绍",
+      prompt: "请重点提取工具的功能特性、使用方法、优缺点和适用场景。",
+    },
+  ];
 
   // 验证URL格式
   const isValidUrl = (urlString: string): boolean => {
     try {
-      new URL(urlString)
-      return true
+      new URL(urlString);
+      return true;
     } catch {
-      return false
+      return false;
     }
-  }
+  };
 
   // 处理网页内容提取
   const handleExtractContent = async () => {
     if (!url.trim()) {
-      setError('请输入网页链接')
-      return
+      setError("请输入网页链接");
+      return;
     }
 
     if (!isValidUrl(url)) {
-      setError('请输入有效的网页链接')
-      return
+      setError("请输入有效的网页链接");
+      return;
     }
 
-    if (extractMode === 'custom' && !userPrompt.trim()) {
-      setError('自定义模式需要输入提取要求')
-      return
+    if (extractMode === "custom" && !userPrompt.trim()) {
+      setError("自定义模式需要输入提取要求");
+      return;
     }
 
-    setIsLoading(true)
-    setError(null)
-    setProgress(0)
-    setExtractedContent(null)
+    setIsLoading(true);
+    setError(null);
+    setProgress(0);
+    setExtractedContent(null);
 
     try {
       // 模拟进度更新
       const progressInterval = setInterval(() => {
-        setProgress(prev => Math.min(prev + 10, 90))
-      }, 200)
+        setProgress((prev) => Math.min(prev + 10, 90));
+      }, 200);
 
-      const response = await fetch('/api/jina/extract', {
-        method: 'POST',
+      const response = await fetch("/api/jina/extract", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           url: url.trim(),
-          userPrompt: extractMode === 'custom' ? userPrompt.trim() : undefined,
+          userPrompt: extractMode === "custom" ? userPrompt.trim() : undefined,
           extractMode,
-          language: 'zh'
-        })
-      })
+          language: "zh",
+        }),
+      });
 
-      clearInterval(progressInterval)
-      setProgress(100)
+      clearInterval(progressInterval);
+      setProgress(100);
 
-      const result = await response.json()
+      const result = await response.json();
 
       if (!result.success) {
-        throw new Error(result.error || '网页内容提取失败')
+        throw new Error(result.error || "网页内容提取失败");
       }
 
-      setExtractedContent(result.data)
+      setExtractedContent(result.data);
     } catch (error) {
-      console.error('Extract content error:', error)
-      setError(error instanceof Error ? error.message : '提取失败，请稍后重试')
+      console.error("Extract content error:", error);
+      setError(error instanceof Error ? error.message : "提取失败，请稍后重试");
     } finally {
-      setIsLoading(false)
-      setTimeout(() => setProgress(0), 1000)
+      setIsLoading(false);
+      setTimeout(() => setProgress(0), 1000);
     }
-  }
+  };
 
   // 保存为知识碎片
   const handleSaveAsFragment = async () => {
-    if (!extractedContent) return
+    if (!extractedContent) return;
 
     try {
       const fragmentData = {
@@ -146,7 +157,7 @@ export function WebFragmentInput() {
         tags: extractedContent.tags,
         category: extractedContent.category,
         priority: extractedContent.priority,
-        status: 'active' as const,
+        status: "active" as const,
         createdAt: new Date(),
         updatedAt: new Date(),
         metadata: {
@@ -154,34 +165,38 @@ export function WebFragmentInput() {
           readingTime: extractedContent.metadata.readingTime,
           source: extractedContent.metadata.url,
           extractedAt: extractedContent.metadata.extractedAt,
-          userPrompt: extractedContent.metadata.userPrompt
-        }
-      }
+          userPrompt: extractedContent.metadata.userPrompt,
+        },
+      };
 
-      await addFragment(fragmentData)
-      
+      await addFragment(fragmentData);
+
       // 成功提示
-      alert(`知识碎片保存成功！\n\n标题：${fragmentData.title}\n分类：${fragmentData.category}\n标签：${fragmentData.tags.join(', ')}`)
-      
+      alert(
+        `知识碎片保存成功！\n\n标题：${fragmentData.title}\n分类：${
+          fragmentData.category
+        }\n标签：${fragmentData.tags.join(", ")}`
+      );
+
       // 清空表单
-      setUrl('')
-      setUserPrompt('')
-      setExtractedContent(null)
+      setUrl("");
+      setUserPrompt("");
+      setExtractedContent(null);
     } catch (error) {
-      console.error('Save fragment error:', error)
-      setError('保存知识碎片失败')
+      console.error("Save fragment error:", error);
+      setError("保存知识碎片失败");
     }
-  }
+  };
 
   // 复制内容到剪贴板
   const copyToClipboard = async (text: string) => {
     try {
-      await navigator.clipboard.writeText(text)
+      await navigator.clipboard.writeText(text);
       // 可以添加toast提示
     } catch (error) {
-      console.error('Copy failed:', error)
+      console.error("Copy failed:", error);
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -204,10 +219,10 @@ export function WebFragmentInput() {
                 placeholder="https://example.com/article"
                 className="flex-1"
               />
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
-                onClick={() => window.open(url, '_blank')}
+                onClick={() => window.open(url, "_blank")}
                 disabled={!isValidUrl(url)}
               >
                 <ExternalLink className="w-4 h-4" />
@@ -218,7 +233,10 @@ export function WebFragmentInput() {
           {/* 提取模式选择 */}
           <div>
             <label className="text-sm font-medium">提取模式</label>
-            <Select value={extractMode} onValueChange={(value: any) => setExtractMode(value)}>
+            <Select
+              value={extractMode}
+              onValueChange={(value: ExtractModeType) => setExtractMode(value)}
+            >
               <SelectTrigger className="mt-1">
                 <SelectValue />
               </SelectTrigger>
@@ -231,7 +249,7 @@ export function WebFragmentInput() {
           </div>
 
           {/* 自定义提取要求 */}
-          {extractMode === 'custom' && (
+          {extractMode === "custom" && (
             <div>
               <label className="text-sm font-medium">提取要求 *</label>
               <div className="mt-1 space-y-2">
@@ -241,11 +259,13 @@ export function WebFragmentInput() {
                   placeholder="请描述您希望从网页中提取什么样的内容..."
                   className="min-h-[100px]"
                 />
-                
+
                 {/* 预设模板 */}
                 <div className="flex flex-wrap gap-2">
-                  <span className="text-xs text-muted-foreground">快速模板：</span>
-                  {promptTemplates.map(template => (
+                  <span className="text-xs text-muted-foreground">
+                    快速模板：
+                  </span>
+                  {promptTemplates.map((template) => (
                     <Button
                       key={template.name}
                       variant="ghost"
@@ -263,8 +283,8 @@ export function WebFragmentInput() {
 
           {/* 操作按钮 */}
           <div className="flex gap-2">
-            <Button 
-              onClick={handleExtractContent} 
+            <Button
+              onClick={handleExtractContent}
               disabled={isLoading}
               className="flex-1"
             >
@@ -325,7 +345,7 @@ export function WebFragmentInput() {
                 <TabsTrigger value="tags">标签分类</TabsTrigger>
                 <TabsTrigger value="raw">原始内容</TabsTrigger>
               </TabsList>
-              
+
               <TabsContent value="content" className="space-y-4">
                 <div>
                   <div className="flex items-center justify-between mb-2">
@@ -338,7 +358,9 @@ export function WebFragmentInput() {
                       <Copy className="w-4 h-4" />
                     </Button>
                   </div>
-                  <p className="text-lg font-semibold">{extractedContent.title}</p>
+                  <p className="text-lg font-semibold">
+                    {extractedContent.title}
+                  </p>
                 </div>
 
                 {extractedContent.summary && (
@@ -348,12 +370,16 @@ export function WebFragmentInput() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => copyToClipboard(extractedContent.summary!)}
+                        onClick={() =>
+                          copyToClipboard(extractedContent.summary!)
+                        }
                       >
                         <Copy className="w-4 h-4" />
                       </Button>
                     </div>
-                    <p className="text-muted-foreground">{extractedContent.summary}</p>
+                    <p className="text-muted-foreground">
+                      {extractedContent.summary}
+                    </p>
                   </div>
                 )}
 
@@ -364,7 +390,9 @@ export function WebFragmentInput() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => copyToClipboard(extractedContent.extractedContent!)}
+                        onClick={() =>
+                          copyToClipboard(extractedContent.extractedContent!)
+                        }
                       >
                         <Copy className="w-4 h-4" />
                       </Button>
@@ -377,57 +405,75 @@ export function WebFragmentInput() {
                   </div>
                 )}
               </TabsContent>
-              
+
               <TabsContent value="metadata" className="space-y-4">
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <span className="font-medium">来源URL:</span>
-                    <p className="text-muted-foreground break-all">{extractedContent.metadata.url}</p>
+                    <p className="text-muted-foreground break-all">
+                      {extractedContent.metadata.url}
+                    </p>
                   </div>
                   <div>
                     <span className="font-medium">字数:</span>
-                    <p className="text-muted-foreground">{extractedContent.metadata.wordCount}</p>
+                    <p className="text-muted-foreground">
+                      {extractedContent.metadata.wordCount}
+                    </p>
                   </div>
                   <div>
                     <span className="font-medium">阅读时长:</span>
-                    <p className="text-muted-foreground">{extractedContent.metadata.readingTime} 分钟</p>
+                    <p className="text-muted-foreground">
+                      {extractedContent.metadata.readingTime} 分钟
+                    </p>
                   </div>
                   <div>
                     <span className="font-medium">提取时间:</span>
                     <p className="text-muted-foreground">
-                      {new Date(extractedContent.metadata.extractedAt).toLocaleString()}
+                      {new Date(
+                        extractedContent.metadata.extractedAt
+                      ).toLocaleString()}
                     </p>
                   </div>
                   {extractedContent.metadata.userPrompt && (
                     <div className="col-span-2">
                       <span className="font-medium">用户要求:</span>
-                      <p className="text-muted-foreground">{extractedContent.metadata.userPrompt}</p>
+                      <p className="text-muted-foreground">
+                        {extractedContent.metadata.userPrompt}
+                      </p>
                     </div>
                   )}
                 </div>
               </TabsContent>
-              
+
               <TabsContent value="tags" className="space-y-4">
                 <div>
                   <h3 className="font-medium mb-2">分类</h3>
                   <Badge variant="secondary">{extractedContent.category}</Badge>
                 </div>
-                
+
                 <div>
                   <h3 className="font-medium mb-2">优先级</h3>
-                  <Badge variant={
-                    extractedContent.priority === 'high' ? 'destructive' :
-                    extractedContent.priority === 'medium' ? 'default' : 'secondary'
-                  }>
-                    {extractedContent.priority === 'high' ? '高' :
-                     extractedContent.priority === 'medium' ? '中' : '低'}
+                  <Badge
+                    variant={
+                      extractedContent.priority === "high"
+                        ? "destructive"
+                        : extractedContent.priority === "medium"
+                        ? "default"
+                        : "secondary"
+                    }
+                  >
+                    {extractedContent.priority === "high"
+                      ? "高"
+                      : extractedContent.priority === "medium"
+                      ? "中"
+                      : "低"}
                   </Badge>
                 </div>
-                
+
                 <div>
                   <h3 className="font-medium mb-2">标签</h3>
                   <div className="flex flex-wrap gap-2">
-                    {extractedContent.tags.map(tag => (
+                    {extractedContent.tags.map((tag) => (
                       <Badge key={tag} variant="outline">
                         <Tag className="w-3 h-3 mr-1" />
                         {tag}
@@ -436,7 +482,7 @@ export function WebFragmentInput() {
                   </div>
                 </div>
               </TabsContent>
-              
+
               <TabsContent value="raw" className="space-y-4">
                 <div>
                   <div className="flex items-center justify-between mb-2">
@@ -461,5 +507,5 @@ export function WebFragmentInput() {
         </Card>
       )}
     </div>
-  )
+  );
 }

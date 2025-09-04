@@ -37,7 +37,8 @@ export function FragmentInput() {
         body: JSON.stringify({
           chatId,
           token,
-          content: text
+          content: text,
+          workflow: "card"
         })
       })
       
