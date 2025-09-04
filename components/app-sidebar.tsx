@@ -44,11 +44,11 @@ const mainMenuItems = [
 
 // 底部菜单项配置
 const footerMenuItems = [
-  // {
-  //   title: "个人中心",
-  //   url: "/user",
-  //   icon: User,
-  // },
+  {
+    title: "个人中心",
+    url: "/user",
+    icon: User,
+  },
 ]
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
