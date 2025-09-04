@@ -1,40 +1,58 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import { Activity, FileText, MessageCircle, Calendar } from "lucide-react"
+import { UserStats } from "@/lib/types"
 
 interface UserStatsCardProps {
-  stats: {
-    totalFragments: number
-    totalChats: number
-    activeToday: number
-    joinDays: number
-  }
+  userStats: UserStats
 }
 
-export function UserStatsCard({ stats }: UserStatsCardProps) {
+export function UserStatsCard({ userStats }: UserStatsCardProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>使用概览</CardTitle>
-        <CardDescription>您在 iKnow 的活动统计</CardDescription>
+        <CardTitle className="flex items-center">
+          <Activity className="h-5 w-5 mr-2" />
+          使用统计
+        </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-4 bg-blue-50 rounded-lg">
-            <div className="text-2xl font-bold text-blue-600">{stats.totalFragments}</div>
-            <div className="text-sm text-muted-foreground">知识碎片</div>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <FileText className="h-4 w-4 text-blue-500" />
+              <span className="text-sm">知识碎片</span>
+            </div>
+            <Badge variant="secondary">{userStats.totalFragments}</Badge>
           </div>
-          <div className="text-center p-4 bg-green-50 rounded-lg">
-            <div className="text-2xl font-bold text-green-600">{stats.totalChats}</div>
-            <div className="text-sm text-muted-foreground">AI对话</div>
+          <Separator />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <MessageCircle className="h-4 w-4 text-green-500" />
+              <span className="text-sm">对话次数</span>
+            </div>
+            <Badge variant="secondary">{userStats.totalChats}</Badge>
           </div>
-          <div className="text-center p-4 bg-purple-50 rounded-lg">
-            <div className="text-2xl font-bold text-purple-600">{stats.activeToday}</div>
-            <div className="text-sm text-muted-foreground">今日活跃</div>
+          <Separator />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Activity className="h-4 w-4 text-orange-500" />
+              <span className="text-sm">今日活跃</span>
+            </div>
+            <Badge variant={userStats.activeToday > 0 ? "default" : "secondary"}>
+              {userStats.activeToday > 0 ? "活跃" : "未活跃"}
+            </Badge>
           </div>
-          <div className="text-center p-4 bg-orange-50 rounded-lg">
-            <div className="text-2xl font-bold text-orange-600">{stats.joinDays}</div>
-            <div className="text-sm text-muted-foreground">加入天数</div>
+          <Separator />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Calendar className="h-4 w-4 text-purple-500" />
+              <span className="text-sm">加入天数</span>
+            </div>
+            <Badge variant="outline">{userStats.joinDays} 天</Badge>
           </div>
         </div>
       </CardContent>

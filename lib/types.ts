@@ -1,5 +1,23 @@
 // 碎片管理数据类型定义
 
+// 用户类型定义
+export type UserType = {
+  _id: string
+  username: string
+  phone: string
+  password: string
+  createTime: Date
+  updateTime: Date
+}
+
+// 用户统计信息
+export interface UserStats {
+  totalFragments: number
+  totalChats: number
+  activeToday: number
+  joinDays: number
+}
+
 // 碎片 Fragment
 export interface Fragment {
   id?: number; // 主键（IndexedDB 自动递增）

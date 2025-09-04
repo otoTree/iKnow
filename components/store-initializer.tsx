@@ -1,6 +1,7 @@
 "use client"
 
 import { useFragmentStoreInit } from '@/hooks/use-fragment-store-init'
+import { useUserDBInit } from '@/hooks/use-user-db-init'
 import { ReactNode } from 'react'
 
 interface StoreInitializerProps {
@@ -14,6 +15,9 @@ interface StoreInitializerProps {
 export function StoreInitializer({ children }: StoreInitializerProps) {
   // 初始化Fragment Store
   useFragmentStoreInit()
+  
+  // 初始化用户数据库
+  useUserDBInit()
 
   return <>{children}</>
 }
