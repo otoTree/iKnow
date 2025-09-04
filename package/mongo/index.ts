@@ -1,13 +1,35 @@
 //import { isTestEnv } from '@fastgpt/global/common/system/constants';
 //import { addLog } from '../../common/system/log';
 import type { Model } from 'mongoose';
-import mongoose, { Mongoose } from 'mongoose';
+import mongoose, { 
+  Mongoose, 
+  Schema, 
+  Document, 
+  Types, 
+  Connection, 
+  MongooseError,
+  QueryOptions,
+  UpdateQuery,
+  FilterQuery,
+  ClientSession
+} from 'mongoose';
 
 export default mongoose;
-export * from 'mongoose';
+export type{
+  Mongoose,
+  Schema,
+  Document,
+  Types,
+  Connection,
+  MongooseError,
+  QueryOptions,
+  UpdateQuery,
+  FilterQuery,
+  ClientSession
+};
 
 export const MONGO_URL = process.env.MONGODB_URI as string;
-export const MONGO_LOG_URL = (process.env.MONGODB_LOG_URI ?? process.env.MONGODB_URI) as string;
+//export const MONGO_LOG_URL = (process.env.MONGODB_LOG_URI ?? process.env.MONGODB_URI) as string;
 
 export const connectionMongo = (() => {
   if (!global.mongodb) {

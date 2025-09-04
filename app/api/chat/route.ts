@@ -49,8 +49,14 @@ export async function POST(request: NextRequest) {
       variables = {}, 
       stream = false, 
       detail = false,
-      responseChatItemId 
+      responseChatItemId,
+      whitchWorkflow 
     } = body
+
+    const workflowType ={
+      'common':process.env.NEXT_PUBLIC_WORKFLOW_CHAT,
+      'card':process.env.NEXT_PUBLIC_WORKFLOW_CARD
+    }
 
     // 验证必需参数
     if (!chatId || !content) {
@@ -94,7 +100,7 @@ export async function POST(request: NextRequest) {
     try {
       const response = await axios.post(`${apiBaseUrl}/api/v1/chat/completions`, requestData, {
         headers: {
-          'Authorization': `Bearer ${workflowCardToken}`,
+          'Authorization': `Bearer ${workflowType[whitchWorkflow as keyof typeof workflowType]}`,
           'Content-Type': 'application/json'
         }
       })

@@ -1,13 +1,14 @@
 "use client"
 
 import * as React from "react"
-import { Brain, FileText, Home } from "lucide-react"
+import { Brain, FileText, Home, User, } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -15,9 +16,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { title } from "process"
 
-// 菜单项配置
-const menuItems = [
+// 主要菜单项配置
+const mainMenuItems = [
   {
     title: "首页",
     url: "/",
@@ -33,6 +35,20 @@ const menuItems = [
     url: "/brain",
     icon: Brain,
   },
+  // {
+  //   title: '注册',
+  //   url: "/register",
+  //   icon: User,
+  // }
+]
+
+// 底部菜单项配置
+const footerMenuItems = [
+  // {
+  //   title: "个人中心",
+  //   url: "/user",
+  //   icon: User,
+  // },
 ]
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -45,7 +61,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroupLabel>导航</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuItems.map((item) => (
+              {mainMenuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild isActive={pathname === item.url}>
                     <Link href={item.url}>
@@ -59,6 +75,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {footerMenuItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild isActive={pathname === item.url}>
+                    <Link href={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarFooter>
     </Sidebar>
   )
 }
