@@ -119,3 +119,85 @@ export interface FragmentListResponse {
   sort: FragmentSort;
 }
 
+// 文件上传相关类型定义
+export interface FileUploadResponse {
+  success: boolean;
+  data?: {
+    fileId: string;
+    fileName: string;
+    fileSize: number;
+    uploadedAt: string;
+    downloadUrl: string;
+  };
+  error?: string;
+}
+
+export interface FileListResponse {
+  success: boolean;
+  data?: {
+    files: Array<{
+      fileId: string;
+      fileName: string;
+      mimetype: string;
+      size: number;
+      uploadedAt: Date;
+      metadata?: Record<string, any>;
+    }>;
+    count: number;
+  };
+  error?: string;
+}
+
+export interface FileStatsResponse {
+  success: boolean;
+  data?: {
+    totalFiles: number;
+    totalSize: number;
+    filesByType: Record<string, number>;
+    recentUploads: number;
+  };
+  error?: string;
+}
+
+export interface FileInfoResponse {
+  success: boolean;
+  data?: {
+    fileId: string;
+    fileName: string;
+    mimetype: string;
+    size: number;
+    uploadedAt: Date;
+    metadata?: Record<string, any>;
+    status: string;
+  };
+  error?: string;
+}
+
+// OCR 识别相关类型定义
+export interface OCRResponse {
+  success: boolean;
+  data?: {
+    text: string;
+    confidence: number;
+    language: string;
+    boundingBoxes?: Array<{
+      text: string;
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+      confidence: number;
+    }>;
+    metadata?: {
+      processingTime: number;
+      imageWidth: number;
+      imageHeight: number;
+      detectedLanguages?: string[];
+      ocrEngine: string;
+      version: string;
+    };
+  };
+  error?: string;
+  message?: string;
+}
+
