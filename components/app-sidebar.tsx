@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Brain, FileText, Home, User, } from "lucide-react"
+import { Brain, FileText, Home, User, Folder } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
@@ -29,6 +29,11 @@ const mainMenuItems = [
     title: "碎片管理",
     url: "/fragments",
     icon: FileText,
+  },
+  {
+    title: "分类管理",
+    url: "/categories",
+    icon: Folder,
   },
   {
     title: "第二大脑",

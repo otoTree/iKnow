@@ -24,7 +24,8 @@ export interface Fragment {
   title: string; // 标题
   content: string; // 正文内容
   tags: string[]; // 关联标签名称
-  category?: string; // 所属分类名称（可选）
+  category?: string; // 所属分类名称（可选，向后兼容）
+  categoryId?: number; // 所属分类ID（可选，新的分类关联方式）
   priority: "low" | "medium" | "high"; // 优先级
   status: "draft" | "active" | "archived"; // 状态
   createdAt: Date; // 创建时间

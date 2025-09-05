@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { formatDistanceToNow } from "date-fns"
 import { zhCN } from "date-fns/locale"
+import { useCategoryStore } from "@/lib/stores/category-store"
 
 interface FragmentCardProps {
   fragment: Fragment
@@ -46,6 +47,9 @@ const statusLabels = {
 }
 
 export function FragmentCard({ fragment, onEdit, onDelete, onView }: FragmentCardProps) {
+  const { getCategoryById } = useCategoryStore()
+  const category = fragment.categoryId ? getCategoryById(fragment.categoryId) : null
+  
   const truncatedContent = fragment.content.length > 150 
     ? fragment.content.substring(0, 150) + "..."
     : fragment.content
@@ -129,12 +133,22 @@ export function FragmentCard({ fragment, onEdit, onDelete, onView }: FragmentCar
           )}
           
           {/* 分类 */}
-          {fragment.category && (
+          {(category || fragment.category) && (
             <div className="flex items-center gap-2">
               <span className="text-xs text-muted-foreground">分类:</span>
-              <Badge variant="outline" className="text-xs">
-                {fragment.category}
-              </Badge>
+              {category ? (
+                <Badge variant="outline" className="text-xs flex items-center gap-1">
+                  <div 
+                    className="w-2 h-2 rounded-full" 
+                    style={{ backgroundColor: category.color }}
+                  />
+                  {category.name}
+                </Badge>
+              ) : (
+                <Badge variant="outline" className="text-xs">
+                  {fragment.category}
+                </Badge>
+              )}
             </div>
           )}
           

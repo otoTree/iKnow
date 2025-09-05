@@ -2,6 +2,7 @@
 
 import { useFragmentStoreInit } from '@/hooks/use-fragment-store-init'
 import { useUserDBInit } from '@/hooks/use-user-db-init'
+import { useCategoryStoreInit } from '@/hooks/use-category-store-init'
 import { ReactNode } from 'react'
 
 interface StoreInitializerProps {
@@ -18,6 +19,9 @@ export function StoreInitializer({ children }: StoreInitializerProps) {
   
   // 初始化用户数据库
   useUserDBInit()
+  
+  // 初始化分类 Store
+  useCategoryStoreInit()
 
   return <>{children}</>
 }

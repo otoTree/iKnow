@@ -1,19 +1,28 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Label } from "@/components/ui/label"
 import { FileText, Globe } from "lucide-react"
 // API调用现在通过Next.js API路由处理，不再需要直接导入
 import { useFragmentStore } from "@/lib/stores/fragment-store"
+import { useCategoryStore } from "@/lib/stores/category-store"
 import { WebFragmentInput } from "./web-fragment-input"
 
 export function FragmentInput() {
   const [text, setText] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | undefined>(undefined)
   const { addFragment } = useFragmentStore()
+  const { categories, initializeStore } = useCategoryStore()
+
+  useEffect(() => {
+    initializeStore()
+  }, [initializeStore])
 
   const handleAddFragment = async () => {
     if (!text.trim()) {
@@ -50,6 +59,7 @@ export function FragmentInput() {
           content: text,
           tags: [],
           category: "未分类",
+          categoryId: selectedCategoryId,
           priority: "medium" as "medium" | "low" | "high",
           status: "active" as "active" | "draft" | "archived",
           createdAt: new Date(),
@@ -76,6 +86,7 @@ export function FragmentInput() {
             content: text, // 添加原始内容
             tags: aiResponse.tags || [],
             category: aiResponse.category || "未分类",
+            categoryId: selectedCategoryId,
             priority: aiResponse.priority || "medium",
             status: aiResponse.status || "active",
             createdAt: new Date(aiResponse.createdAt || new Date().toISOString()),
@@ -93,7 +104,7 @@ export function FragmentInput() {
       }
       
       // 2. 调用知识库API添加内容（通过Next.js API路由），使用从AI获取的tags
-      const fragmentResponse = await fetch('/api/fragment', {
+      const fragmentResponse = await fetch('/api/fragment/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -151,20 +162,44 @@ export function FragmentInput() {
               <CardTitle>手动输入知识碎片</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex gap-2">
-                <Textarea 
-                  value={text}
-                  onChange={(e) => setText(e.target.value)}
-                  placeholder="输入新的知识碎片..."
-                  className="flex-1 min-h-[160px] resize-none"
-                />
-                <Button 
-                  onClick={handleAddFragment}
-                  disabled={isLoading}
-                  className="h-40 px-6"
-                >
-                  {isLoading ? "添加中..." : "添加"}
-                </Button>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="category-select">选择分类</Label>
+                  <Select value={selectedCategoryId?.toString()} onValueChange={(value) => setSelectedCategoryId(value ? parseInt(value) : undefined)}>
+                    <SelectTrigger id="category-select">
+                      <SelectValue placeholder="选择一个分类（可选）" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="undefined">无分类</SelectItem>
+                      {categories.map((category) => (
+                        <SelectItem key={category.id} value={category.id!.toString()}>
+                          <div className="flex items-center gap-2">
+                            <div 
+                              className="w-3 h-3 rounded-full" 
+                              style={{ backgroundColor: category.color }}
+                            />
+                            {category.name}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex gap-2">
+                  <Textarea 
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    placeholder="输入新的知识碎片..."
+                    className="flex-1 min-h-[160px] resize-none"
+                  />
+                  <Button 
+                    onClick={handleAddFragment}
+                    disabled={isLoading}
+                    className="h-40 px-6"
+                  >
+                    {isLoading ? "添加中..." : "添加"}
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
