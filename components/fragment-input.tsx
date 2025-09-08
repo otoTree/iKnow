@@ -7,11 +7,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { FileText, Globe } from "lucide-react"
+import { FileText, Globe, Upload } from "lucide-react"
 // API调用现在通过Next.js API路由处理，不再需要直接导入
 import { useFragmentStore } from "@/lib/stores/fragment-store"
 import { useCategoryStore } from "@/lib/stores/category-store"
 import { WebFragmentInput } from "./web-fragment-input"
+import { FileUploadInput } from "./file-upload-input"
 
 export function FragmentInput() {
   const [text, setText] = useState("")
@@ -23,6 +24,18 @@ export function FragmentInput() {
   useEffect(() => {
     initializeStore()
   }, [initializeStore])
+
+  // 处理 OCR 识别结果的回调函数
+  const handleOCRResult = (ocrText: string) => {
+    setText(prevText => {
+      // 如果输入框为空，直接设置 OCR 文字
+      if (!prevText.trim()) {
+        return ocrText
+      }
+      // 如果输入框有内容，在末尾添加 OCR 文字
+      return prevText + '\n\n' + ocrText
+    })
+  }
 
   const handleAddFragment = async () => {
     if (!text.trim()) {
@@ -145,7 +158,7 @@ export function FragmentInput() {
   return (
     <div className="space-y-6">
       <Tabs defaultValue="text" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="text" className="flex items-center gap-2">
             <FileText className="w-4 h-4" />
             文本输入
@@ -153,6 +166,10 @@ export function FragmentInput() {
           <TabsTrigger value="web" className="flex items-center gap-2">
             <Globe className="w-4 h-4" />
             网页解析
+          </TabsTrigger>
+          <TabsTrigger value="file" className="flex items-center gap-2">
+            <Upload className="w-4 h-4" />
+            文件上传
           </TabsTrigger>
         </TabsList>
         
@@ -207,6 +224,10 @@ export function FragmentInput() {
         
         <TabsContent value="web" className="mt-6">
           <WebFragmentInput />
+        </TabsContent>
+        
+        <TabsContent value="file" className="mt-6">
+          <FileUploadInput onOCRResult={handleOCRResult} />
         </TabsContent>
       </Tabs>
     </div>

@@ -1,31 +1,12 @@
 // 碎片管理数据类型定义
 
-// 用户类型定义
-export type UserType = {
-  _id: string
-  username: string
-  phone: string
-  password: string
-  createTime: Date
-  updateTime: Date
-}
-
-// 用户统计信息
-export interface UserStats {
-  totalFragments: number
-  totalChats: number
-  activeToday: number
-  joinDays: number
-}
-
 // 碎片 Fragment
 export interface Fragment {
   id?: number; // 主键（IndexedDB 自动递增）
   title: string; // 标题
   content: string; // 正文内容
   tags: string[]; // 关联标签名称
-  category?: string; // 所属分类名称（可选，向后兼容）
-  categoryId?: number; // 所属分类ID（可选，新的分类关联方式）
+  category?: string; // 所属分类名称（可选）
   priority: "low" | "medium" | "high"; // 优先级
   status: "draft" | "active" | "archived"; // 状态
   createdAt: Date; // 创建时间
@@ -117,5 +98,87 @@ export interface FragmentListResponse {
   pagination: Pagination;
   filters: FragmentFilter;
   sort: FragmentSort;
+}
+
+// 文件上传相关类型定义
+export interface FileUploadResponse {
+  success: boolean;
+  data?: {
+    fileId: string;
+    fileName: string;
+    fileSize: number;
+    uploadedAt: string;
+    downloadUrl: string;
+  };
+  error?: string;
+}
+
+export interface FileListResponse {
+  success: boolean;
+  data?: {
+    files: Array<{
+      fileId: string;
+      fileName: string;
+      mimetype: string;
+      size: number;
+      uploadedAt: Date;
+      metadata?: Record<string, any>;
+    }>;
+    count: number;
+  };
+  error?: string;
+}
+
+export interface FileStatsResponse {
+  success: boolean;
+  data?: {
+    totalFiles: number;
+    totalSize: number;
+    filesByType: Record<string, number>;
+    recentUploads: number;
+  };
+  error?: string;
+}
+
+export interface FileInfoResponse {
+  success: boolean;
+  data?: {
+    fileId: string;
+    fileName: string;
+    mimetype: string;
+    size: number;
+    uploadedAt: Date;
+    metadata?: Record<string, any>;
+    status: string;
+  };
+  error?: string;
+}
+
+// OCR 识别相关类型定义
+export interface OCRResponse {
+  success: boolean;
+  data?: {
+    text: string;
+    confidence: number;
+    language: string;
+    boundingBoxes?: Array<{
+      text: string;
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+      confidence: number;
+    }>;
+    metadata?: {
+      processingTime: number;
+      imageWidth: number;
+      imageHeight: number;
+      detectedLanguages?: string[];
+      ocrEngine: string;
+      version: string;
+    };
+  };
+  error?: string;
+  message?: string;
 }
 

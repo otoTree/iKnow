@@ -148,7 +148,7 @@ export function FragmentDetail({ fragment, isOpen, onClose, onSave, readOnly = f
                   placeholder="输入碎片标题"
                 />
               ) : (
-                <div className="text-lg font-semibold">{fragment.title}</div>
+                <div className="text-lg font-semibold break-words">{fragment.title}</div>
               )}
             </div>
 

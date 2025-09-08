@@ -95,7 +95,7 @@ export function FragmentNode({ data }: FragmentNodeProps) {
             <div className={`absolute top-1 right-1 w-3 h-3 rounded-full ${priorityDotColors[fragment.priority]}`}></div>
             <div className="flex items-center justify-center h-full">
               <div className="text-center">
-                <div className="text-xs font-medium text-gray-700 truncate px-1">
+                <div className="text-xs font-medium text-gray-700 truncate w-14 px-1" title={fragment.title}>
                   {fragment.title.substring(0, 6)}
                 </div>
                 <div className="text-xs text-gray-500">
@@ -159,13 +159,13 @@ export function FragmentNode({ data }: FragmentNodeProps) {
       <Card className={`w-64 border-2 ${priorityColors[fragment.priority]} shadow-lg hover:shadow-xl transition-shadow relative group`}>
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
-          <CardTitle className="text-sm font-medium truncate flex-1" title={fragment.title}>
+          <CardTitle className="text-sm font-medium truncate max-w-[160px]" title={fragment.title}>
             {fragment.title}
           </CardTitle>
           <Button
             size="sm"
             variant="ghost"
-            className="h-6 w-6 p-0 ml-2"
+            className="h-6 w-6 p-0 ml-2 flex-shrink-0"
             onClick={handleNodeClick}
           >
             ×

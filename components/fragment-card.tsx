@@ -47,8 +47,8 @@ const statusLabels = {
 }
 
 export function FragmentCard({ fragment, onEdit, onDelete, onView }: FragmentCardProps) {
-  const { getCategoryById } = useCategoryStore()
-  const category = fragment.categoryId ? getCategoryById(fragment.categoryId) : null
+  const { categories } = useCategoryStore()
+  const category = fragment.category ? categories.find(c => c.name === fragment.category) : null
   
   const truncatedContent = fragment.content.length > 150 
     ? fragment.content.substring(0, 150) + "..."
@@ -58,8 +58,8 @@ export function FragmentCard({ fragment, onEdit, onDelete, onView }: FragmentCar
     <Card className="group hover:shadow-md transition-shadow duration-200">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
-          <div className="flex-1 min-w-0">
-            <CardTitle className="text-lg font-semibold truncate">
+          <div className="flex-1 min-w-0 max-w-[calc(100%-45px)]">
+            <CardTitle className="text-lg font-semibold truncate" title={fragment.title}>
               {fragment.title}
             </CardTitle>
             <CardDescription className="mt-1 flex items-center gap-2 text-sm">
@@ -82,7 +82,7 @@ export function FragmentCard({ fragment, onEdit, onDelete, onView }: FragmentCar
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="opacity-0 group-hover:opacity-100 transition-opacity"
+                className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
               >
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
