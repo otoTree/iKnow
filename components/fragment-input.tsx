@@ -60,7 +60,7 @@ export function FragmentInput() {
           chatId,
           token,
           content: text,
-          workflow: "card"
+          whichWorkflow: "card"
         })
       })
       
@@ -201,6 +201,7 @@ export function FragmentInput() {
                       ))}
                     </SelectContent>
                   </Select>
+                  
                 </div>
                 <div className="flex gap-2">
                   <Textarea 

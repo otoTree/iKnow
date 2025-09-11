@@ -44,7 +44,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<FileUploa
     const fileBuffer = Buffer.from(await file.arrayBuffer());
     
     // 准备元数据
-    const metadata: Record<string, any> = {};
+    const metadata: Record<string,string|object> = {};
     if (description) metadata.description = description;
     if (tags) {
       try {

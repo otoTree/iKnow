@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
       stream = false, 
       detail = false,
       responseChatItemId,
-      whitchWorkflow 
+      whichWorkflow 
     } = body
 
     const workflowType ={
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
     // 从服务端环境变量获取配置
     const apiBaseUrl = process.env.API_BASE_URL
     console.log('api base url',apiBaseUrl)
-    const workflowCardToken = token
+    const workflowCardToken = workflowType[whichWorkflow as keyof typeof workflowType]
     console.log(workflowCardToken)
     if (!apiBaseUrl || !workflowCardToken) {
       return NextResponse.json(
@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
     try {
       const response = await axios.post(`${apiBaseUrl}/api/v1/chat/completions`, requestData, {
         headers: {
-          'Authorization': `Bearer ${workflowType[whitchWorkflow as keyof typeof workflowType]}`,
+          'Authorization': `Bearer ${workflowType[whichWorkflow as keyof typeof workflowType]}`,
           'Content-Type': 'application/json'
         }
       })

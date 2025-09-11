@@ -93,7 +93,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<OCRRespon
           text: ocrResult.text,
           confidence: ocrResult.confidence,
           language: language,
-          boundingBoxes: ocrResult.words.map(word => ({
+          boundingBoxes: ocrResult.words?.map(word => ({
             text: word.text,
             x: word.bbox.x0,
             y: word.bbox.y0,

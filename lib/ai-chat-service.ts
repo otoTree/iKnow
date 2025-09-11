@@ -44,7 +44,8 @@ export class AIChatService {
         stream: false,
         detail: false,
         responseChatItemId: `response_${Date.now()}`,
-        variables: { tags: uniqueTags } // 存储传入的碎片知识的tags
+        variables: { tags: uniqueTags }, // 存储传入的碎片知识的tags
+        whichWorkflow: 'common'
       }
 
       const headers: Record<string, string> = {
